@@ -1,0 +1,15 @@
+---
+# Source: sonarqube/templates/prometheus-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ce-lts-sonarqube-prometheus-config
+  labels:
+    app: sonarqube
+    chart: sonarqube-1.0.4
+    release: ce-lts
+    heritage: Helm
+data:
+  prometheus-config.yaml: |-
+        rules:
+        - pattern: .*

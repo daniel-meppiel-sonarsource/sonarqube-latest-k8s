@@ -1,0 +1,13 @@
+---
+# Source: sonarqube/templates/init-fs.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ce-lts-sonarqube-init-fs
+  labels:
+    app: sonarqube
+    chart: sonarqube-1.0.4
+    release: ce-lts
+    heritage: Helm
+data:
+  init_fs.sh: |-

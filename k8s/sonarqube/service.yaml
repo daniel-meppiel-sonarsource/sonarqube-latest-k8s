@@ -1,0 +1,22 @@
+---
+# Source: sonarqube/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ce-lts-sonarqube
+  labels:
+    app: sonarqube
+    chart: sonarqube-1.0.4
+    release: ce-lts
+    heritage: Helm
+
+spec:
+  type: NodePort
+  ports:
+    - port: 9000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: sonarqube
+    release: ce-lts

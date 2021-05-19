@@ -1,0 +1,14 @@
+---
+# Source: sonarqube/templates/postgres-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ce-lts-sonarqube-postgres-config
+  labels:
+    app: sonarqube
+    chart: sonarqube-1.0.4
+    release: ce-lts
+    heritage: Helm
+data:
+  SONAR_JDBC_USERNAME: "sonarUser"
+  SONAR_JDBC_URL: "jdbc:postgresql://ce-lts-postgresql:5432/sonarDB"

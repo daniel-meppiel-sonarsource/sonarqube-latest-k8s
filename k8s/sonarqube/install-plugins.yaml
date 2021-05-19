@@ -1,0 +1,13 @@
+---
+# Source: sonarqube/templates/install-plugins.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ce-lts-sonarqube-install-plugins
+  labels:
+    app: sonarqube
+    chart: sonarqube-1.0.4
+    release: ce-lts
+    heritage: Helm
+data:
+  install_plugins.sh: |-
