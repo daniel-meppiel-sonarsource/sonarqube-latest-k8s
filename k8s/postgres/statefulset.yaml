@@ -30,12 +30,24 @@ spec:
         role: master
     spec:      
       securityContext:
-        fsGroup: 1001
+        fsGroup: 1000
       initContainers:
-        # - name: do-something
-        #   image: busybox
-        #   command: ['do', 'something']
-        
+        - name: init-chmod-data
+          image: docker.io/bitnami/bitnami-shell:10
+          imagePullPolicy: "IfNotPresent"
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /bitnami/postgresql/conf /bitnami/postgresql/data /bitnami/postgresql/lock
+              chmod 700 /bitnami/postgresql/conf /bitnami/postgresql/data /bitnami/postgresql/lock
+              find /bitnami/postgresql -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
+                xargs chown -R 1000:1000
+          securityContext: 
+            runAsUser: 0
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/postgresql
       containers:
         - name: ce-lts-postgresql
           image: docker.io/bitnami/postgresql:11.7.0-debian-10-r26
@@ -48,7 +60,7 @@ spec:
               cpu: 100m
               memory: 200Mi
           securityContext:
-            runAsUser: 1001
+            runAsUser: 1000
           env:
             - name: BITNAMI_DEBUG
               value: "false"
@@ -102,18 +114,11 @@ spec:
               mountPath: /dev/shm
             - name: data
               mountPath: /bitnami/postgresql
-              subPath: 
       volumes:
         - name: dshm
           emptyDir:
             medium: Memory
             sizeLimit: 1Gi
-  volumeClaimTemplates:
-    - metadata:
-        name: data
-      spec:
-        accessModes:
-          - "ReadWriteOnce"
-        resources:
-          requests:
-            storage: "20Gi"
+        - name: data
+          persistentVolumeClaim:
+            claimName: postgresql-data-claim

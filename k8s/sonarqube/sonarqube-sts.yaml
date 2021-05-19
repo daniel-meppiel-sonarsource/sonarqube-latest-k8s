@@ -29,7 +29,7 @@ spec:
         release: ce-lts
       annotations:
         checksum/init-sysctl: 1a2e1c305b1035ebd54a6d0473c206c5bd637e99db7a7e909ad2ccdac98ed2f6
-        checksum/init-fs: 7814e954471b08210a662a00b626a76d1560926d9070fdacee356133cf6c9385
+        checksum/init-fs: 73356311234eef9a39d295da883946e97379fe2a740f0e634ec414cb2ccfb260
         checksum/plugins: 021884973bbfc3dbd97d2e3e38125f83cbb347c4f9e11d8da3573faa60100770
         checksum/config: 4e86f063ad72a7b3987ea079b8f15650f8caa5b8c94766d06288e2a4e16341b5
         checksum/secret: cf5ff2c7eef80c807e5e770576cabff164cfbf825b731aa5524a3d47c11eb05a
@@ -75,6 +75,48 @@ spec:
               value: 
             - name: no_proxy
               value: 
+        - name: init-fs
+          image: busybox:1.32
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          resources:
+            {}
+          command: ["sh",
+            "-e",
+            "/tmp/scripts/init_fs.sh"]
+          volumeMounts:
+            - name: init-fs
+              mountPath: /tmp/scripts/
+            - mountPath: /opt/sonarqube/data
+              name: sonarqube
+              subPath: data
+            - mountPath: /opt/sonarqube/extensions
+              name: sonarqube
+              subPath: extensions
+            - mountPath: /opt/sonarqube/temp
+              name: sonarqube
+              subPath: temp
+            - mountPath: /opt/sonarqube/logs
+              name: sonarqube
+              subPath: logs
+            - mountPath: /tmp
+              name: tmp-dir
+        - name: init-chmod-data
+          image: docker.io/bitnami/bitnami-shell:10
+          imagePullPolicy: "IfNotPresent"
+          command:
+            - sh
+            - -c
+            - |
+              chmod 700 /opt/sonarqube
+              find /opt/sonarqube | \
+                xargs chown -R 1000:1000
+          securityContext: 
+            runAsUser: 0
+          volumeMounts:
+            - name: sonarqube
+              mountPath: /opt/sonarqube
       containers:
         - name: sonarqube
           image: "sonarqube:8.9-community"
@@ -154,6 +196,9 @@ spec:
             - mountPath: /opt/sonarqube/data
               name: sonarqube
               subPath: data
+            - mountPath: /opt/sonarqube/extensions
+              name: sonarqube
+              subPath: extensions
             - mountPath: /opt/sonarqube/temp
               name: sonarqube
               subPath: temp
@@ -190,8 +235,8 @@ spec:
             - key: prometheus-config.yaml
               path: prometheus-config.yaml
       - name: sonarqube
-        emptyDir:
-          {}
+        persistentVolumeClaim:
+          claimName: ce-lts-sonarqube
       - name : tmp-dir
         emptyDir:
           {}

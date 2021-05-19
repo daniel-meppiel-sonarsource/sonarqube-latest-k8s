@@ -7,3 +7,4 @@ deploy:
     manifests:
     - k8s/postgres/*.yaml
     - k8s/sonarqube/*.yaml
+    - k8s/ingress/*.yaml

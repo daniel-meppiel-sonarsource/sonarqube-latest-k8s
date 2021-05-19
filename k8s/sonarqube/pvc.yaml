@@ -1,0 +1,38 @@
+
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: sq-volume
+  labels:
+    volume: sq
+    app: sq
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 6Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data"
+---
+# Source: sonarqube/templates/pvc.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ce-lts-sonarqube
+  labels:
+    app: sonarqube
+    chart: "sonarqube-1.0.4"
+    release: "ce-lts"
+    heritage: "Helm"
+spec:
+  storageClassName: manual
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "5Gi"
+  selector: 
+    matchLabels:
+      volume: sq
