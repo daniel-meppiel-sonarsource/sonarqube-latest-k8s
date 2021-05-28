@@ -3,7 +3,7 @@ Runs latest SonarQube behind Nginx Ingress on Kubernetes. Launch it with one com
 The instructions below explain how to access this deployment Ngrok secure HTTPS tunnel.
 
 ## Requirements
-Install Docker, Minikube, Ngrok and Skaffold. 
+Install [Docker](https://www.docker.com), [Minikube](https://minikube.sigs.k8s.io), [Ngrok](https://ngrok.com) and [Skaffold](https://skaffold.dev). 
 ## Setup
 
 Edit `/k8s/ingress/sq-ingress.yaml` and set `host` key to match your (Ngrok) custom domain.
