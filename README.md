@@ -32,3 +32,6 @@ kubectl get pods
 ```
 
 Access SonarQube after the Pod is in ready status under `your_ngrok_host`.
+
+## Ngrok/No Ingress setup
+for a simplified setup without ingress, have a look at the feat/sc/direct-ngrok-no-ingress branch of this project
